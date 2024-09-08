@@ -1,0 +1,7 @@
+.env
+bin/
+coverage*
+*.prof
+*.exe
+artifacts/
+__pycache__/
