@@ -1,0 +1,27 @@
+syntax = "proto3";
+package worker.v1;
+option go_package = "jobplatform/internal/transport/pb";
+
+// Протокол получения заданий через unary RPC: исполнители запрашивают только доступную ёмкость.
+service WorkerService {
+ rpc RegisterWorker(RegisterRequest) returns (Empty);
+ rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+ // Возвращает не более восьми заданий за RPC в пределах клиентского лимита 16 МиБ.
+ rpc Claim(ClaimRequest) returns (ClaimResponse);
+ rpc Complete(CompleteRequest) returns (Empty);
+}
+message Empty {}
+message RegisterRequest { string worker_id=1; string hostname=2; repeated string queues=3; int32 concurrency=4; string version=5; }
+message ActiveLease { string job_id=1; string lease_token=2; }
+// Продление защищено токеном; неизвестные, отменённые и истёкшие аренды отклоняются.
+message HeartbeatRequest { string worker_id=1; repeated ActiveLease active=2; }
+message HeartbeatResponse { repeated ActiveLease rejected_leases=1; }
+message ClaimRequest { string worker_id=1; int32 available_slots=2; }
+message Assignment {
+ string id=1; string type=2; bytes payload=3; string queue=4;
+ int32 attempt=5; int32 timeout_seconds=6; string lease_token=7;
+ string request_id=8; string trace_parent=9; string trace_state=10;
+}
+message ClaimResponse { repeated Assignment jobs=1; }
+// Завершение можно повторить при потере ответа. Заменённая аренда не позволяет сохранить результат.
+message CompleteRequest { string worker_id=1; string job_id=2; string lease_token=3; bool succeeded=4; bytes result=5; string error=6; }
