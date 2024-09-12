@@ -1,0 +1,274 @@
+openapi: 3.0.3
+info:
+  title: Распределённая платформа обработки заданий
+  version: 1.0.0
+  description: Задания обрабатываются как минимум один раз. Идемпотентность создания действует в пределах очереди; внешние побочные эффекты требуют идемпотентных обработчиков.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerKey: []
+paths:
+  /api/v1/jobs:
+    post:
+      operationId: createJob
+      summary: Сохранить задание или вернуть существующее задание с тем же ключом идемпотентности
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          schema: {type: string, maxLength: 200}
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateJob'}
+      responses:
+        '201': {$ref: '#/components/responses/Job'}
+        '200': {$ref: '#/components/responses/Job'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '413': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+    get:
+      operationId: listJobs
+      summary: Получить задания от новых к старым с непрозрачным курсором по времени и UUID
+      parameters:
+        - in: query
+          name: status
+          schema: {$ref: '#/components/schemas/Status'}
+        - in: query
+          name: type
+          schema: {type: string}
+        - in: query
+          name: queue
+          schema: {type: string}
+        - in: query
+          name: worker
+          schema: {type: string}
+        - in: query
+          name: createdFrom
+          schema: {type: string, format: date-time}
+        - in: query
+          name: createdTo
+          schema: {type: string, format: date-time}
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200': {$ref: '#/components/responses/Page'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/jobs/{id}:
+    parameters:
+      - $ref: '#/components/parameters/JobId'
+    get:
+      operationId: getJob
+      responses:
+        '200': {$ref: '#/components/responses/Job'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/jobs/{id}/attempts:
+    parameters:
+      - $ref: '#/components/parameters/JobId'
+    get:
+      operationId: getAttempts
+      summary: Получить историю всех попыток после повторных постановок в очередь по возрастанию идентификатора попытки
+      responses:
+        '200':
+          description: История попыток
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/Attempt'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/jobs/{id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/JobId'
+    post:
+      operationId: cancelJob
+      summary: Отменить активное задание; исполнитель узнает об отклонении токена при следующем heartbeat
+      responses:
+        '200': {$ref: '#/components/responses/Job'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '409': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/jobs/{id}/requeue:
+    parameters:
+      - $ref: '#/components/parameters/JobId'
+    post:
+      operationId: requeueJob
+      summary: Сбросить лимит попыток неисправимого задания с сохранением полной истории
+      responses:
+        '200': {$ref: '#/components/responses/Job'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '409': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/jobs/{id}/retry:
+    parameters:
+      - $ref: '#/components/parameters/JobId'
+    post:
+      operationId: retryJob
+      summary: Альтернативный вызов requeue (только для неисправимых заданий)
+      responses:
+        '200': {$ref: '#/components/responses/Job'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '404': {$ref: '#/components/responses/Error'}
+        '409': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /api/v1/dead-letter:
+    get:
+      operationId: listDeadLetter
+      summary: Получить задания DEAD_LETTERED; поддерживаются те же фильтры что и в listJobs
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200': {$ref: '#/components/responses/Page'}
+        '400': {$ref: '#/components/responses/Error'}
+        '401': {$ref: '#/components/responses/Error'}
+        '500': {$ref: '#/components/responses/Error'}
+  /health/live:
+    get:
+      operationId: liveness
+      security: []
+      responses:
+        '200': {description: Процесс работает}
+  /health/ready:
+    get:
+      operationId: readiness
+      security: []
+      responses:
+        '200': {description: PostgreSQL доступен}
+        '503': {description: PostgreSQL недоступен}
+  /metrics:
+    get:
+      operationId: metrics
+      security: []
+      responses:
+        '200':
+          description: Метрики в формате Prometheus
+          content:
+            text/plain:
+              schema: {type: string}
+components:
+  securitySchemes:
+    bearerKey: {type: http, scheme: bearer}
+  parameters:
+    JobId:
+      in: path
+      name: id
+      required: true
+      schema: {type: string, format: uuid}
+    RequestId:
+      in: header
+      name: X-Request-Id
+      description: UUID для сопоставления запросов; отсутствующие или некорректные значения заменяются
+      schema: {type: string, format: uuid}
+    Limit:
+      in: query
+      name: limit
+      schema: {type: integer, minimum: 1, maximum: 100, default: 50}
+    Cursor:
+      in: query
+      name: cursor
+      schema: {type: string}
+  responses:
+    Error:
+      description: Ошибка с полями code/message/requestId. Внутренние ошибки хранилища не раскрываются.
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    Job:
+      description: Состояние задания. При создании возвращается Location; все ответы API содержат X-Request-Id.
+      headers:
+        X-Request-Id:
+          schema: {type: string, format: uuid}
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Job'}
+    Page:
+      description: Страница заданий; передайте nextCursor для получения следующей страницы с теми же фильтрами
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [jobs]
+            properties:
+              jobs:
+                type: array
+                items: {$ref: '#/components/schemas/Job'}
+              nextCursor: {type: string}
+  schemas:
+    Status:
+      type: string
+      enum: [SCHEDULED, READY, RUNNING, SUCCEEDED, RETRY_WAIT, DEAD_LETTERED, CANCELLED]
+    CreateJob:
+      type: object
+      additionalProperties: false
+      required: [type, payload]
+      properties:
+        queue: {type: string, maxLength: 64, default: default}
+        type: {type: string, minLength: 1, maxLength: 64, example: sleep}
+        payload:
+          description: Произвольный JSON кроме null трактуется обработчиком. Тело HTTP-запроса и нормализованный payload в PostgreSQL ограничены размером 1 МиБ каждый; превышение любого лимита возвращает 413. Числа должны укладываться в числовые ограничения JSONB PostgreSQL.
+        priority: {type: integer, minimum: 0, maximum: 100, default: 0}
+        delaySeconds: {type: integer, minimum: 0, maximum: 31536000, default: 0}
+        runAt: {type: string, format: date-time, description: Несовместимо с ненулевым delaySeconds}
+        maxAttempts: {type: integer, minimum: 0, maximum: 100, default: 3, description: Ноль выбирает значение по умолчанию}
+        timeoutSeconds: {type: integer, minimum: 0, maximum: 86400, default: 60, description: Ноль выбирает значение по умолчанию}
+        idempotencyKey: {type: string, maxLength: 200, description: Должен совпадать с заголовком если заданы оба значения}
+    Job:
+      type: object
+      required: [id, queue, type, payload, status, priority, scheduledAt, maxAttempts, attempts, timeoutSeconds, createdAt, updatedAt, requestId]
+      properties:
+        id: {type: string, format: uuid}
+        queue: {type: string}
+        type: {type: string}
+        payload: {}
+        status: {$ref: '#/components/schemas/Status'}
+        priority: {type: integer}
+        scheduledAt: {type: string, format: date-time}
+        maxAttempts: {type: integer}
+        attempts: {type: integer}
+        timeoutSeconds: {type: integer}
+        idempotencyKey: {type: string}
+        createdAt: {type: string, format: date-time}
+        updatedAt: {type: string, format: date-time}
+        startedAt: {type: string, format: date-time}
+        completedAt: {type: string, format: date-time}
+        result: {}
+        lastError: {type: string}
+        workerId: {type: string}
+        leaseExpiresAt: {type: string, format: date-time}
+        requestId: {type: string}
+    Attempt:
+      type: object
+      required: [id, jobId, attemptNumber, workerId, startedAt, status]
+      properties:
+        id: {type: integer, format: int64}
+        jobId: {type: string, format: uuid}
+        attemptNumber: {type: integer}
+        workerId: {type: string}
+        startedAt: {type: string, format: date-time}
+        finishedAt: {type: string, format: date-time}
+        status: {type: string, enum: [RUNNING, SUCCEEDED, FAILED, CANCELLED, EXPIRED]}
+        error: {type: string}
+        durationMs: {type: integer, format: int64}
+    Error:
+      type: object
+      required: [code, message, requestId]
+      properties:
+        code: {type: string}
+        message: {type: string}
+        requestId: {type: string, format: uuid}
