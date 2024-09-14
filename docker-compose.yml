@@ -1,0 +1,94 @@
+name: job-platform
+x-app: &app
+  build:
+    context: .
+    dockerfile: deployments/docker/Dockerfile
+  restart: unless-stopped
+  stop_grace_period: 35s
+  healthcheck:
+    test: [CMD, wget, -q, -O, /dev/null, http://localhost:8080/health/ready]
+    interval: 5s
+    timeout: 3s
+    retries: 10
+x-env: &env
+  DATABASE_URL: postgres://jobs:jobs@postgres:5432/jobs?sslmode=disable
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+  WORKER_TOKEN: local-demo-worker-token
+  API_KEY: ${API_KEY:-local-demo-api-key}
+  LEASE_DURATION: 15s
+  WORKER_HEARTBEAT_INTERVAL: 3s
+  WORKER_HEARTBEAT_TIMEOUT: 12s
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: jobs
+      POSTGRES_PASSWORD: jobs
+      POSTGRES_DB: jobs
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U jobs -d jobs]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  migrate:
+    image: migrate/migrate:v4.19.0
+    volumes: [./migrations:/migrations:ro]
+    command: [-path, /migrations, -database, "postgres://jobs:jobs@postgres:5432/jobs?sslmode=disable", up]
+    depends_on:
+      postgres: {condition: service_healthy}
+  api:
+    <<: *app
+    command: [api]
+    environment: *env
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  scheduler:
+    <<: *app
+    command: [scheduler]
+    environment: *env
+    ports: ["127.0.0.1:9090:9090", "127.0.0.1:8081:8080"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+  worker-1:
+    <<: *app
+    command: [worker]
+    environment:
+      <<: *env
+      WORKER_ID: worker-1
+      SCHEDULER_ADDR: scheduler:9090
+      WORKER_CONCURRENCY: 4
+      WORKER_QUEUE_SIZE: 4
+    depends_on:
+      scheduler: {condition: service_healthy}
+  worker-2:
+    <<: *app
+    command: [worker]
+    environment:
+      <<: *env
+      WORKER_ID: worker-2
+      SCHEDULER_ADDR: scheduler:9090
+      WORKER_CONCURRENCY: 4
+      WORKER_QUEUE_SIZE: 4
+    depends_on:
+      scheduler: {condition: service_healthy}
+  prometheus:
+    image: prom/prometheus:v3.7.3
+    volumes: [./deployments/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    ports: ["127.0.0.1:9091:9090"]
+  grafana:
+    image: grafana/grafana:12.2.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: local-demo-admin
+    volumes:
+      - ./deployments/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deployments/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["127.0.0.1:3000:3000"]
+  jaeger:
+    image: jaegertracing/all-in-one:1.76.0
+    environment: {COLLECTOR_OTLP_ENABLED: "true"}
+    ports: ["127.0.0.1:16686:16686"]
+volumes:
+  postgres-data:

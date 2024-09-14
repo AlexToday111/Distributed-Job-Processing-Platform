@@ -1,0 +1,15 @@
+{
+  "uid": "job-platform", "title": "Distributed Job Platform", "schemaVersion": 39, "version": 1,
+  "tags": ["jobs", "go"], "refresh": "5s", "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {"id":1,"title":"Queue growth and durable states","type":"timeseries","gridPos":{"x":0,"y":0,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"max by (status) (jobs{job=\"job-platform\",instance=\"scheduler:8080\"})","legendFormat":"{{status}}","refId":"A"}]},
+    {"id":2,"title":"Accepted work per worker (capacity = 8)","type":"timeseries","gridPos":{"x":12,"y":0,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"worker_active_jobs{instance=~\"worker.*\"}","legendFormat":"{{instance}}","refId":"A"}]},
+    {"id":3,"title":"Durable completions / second","type":"timeseries","gridPos":{"x":0,"y":8,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"sum(rate(jobs_succeeded_total[1m]))","legendFormat":"succeeded","refId":"A"},{"expr":"sum(rate(jobs_failed_total[1m]))","legendFormat":"failed","refId":"B"}]},
+    {"id":4,"title":"Queue wait p95 (seconds)","type":"timeseries","gridPos":{"x":12,"y":8,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"histogram_quantile(0.95,sum by(le)(rate(job_queue_wait_duration_seconds_bucket[2m])))","refId":"A"}]},
+    {"id":5,"title":"Execution p95 (seconds)","type":"timeseries","gridPos":{"x":0,"y":16,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"histogram_quantile(0.95,sum by(le)(rate(job_execution_duration_seconds_bucket[2m])))","refId":"A"}]},
+    {"id":6,"title":"Healthy workers","type":"stat","gridPos":{"x":12,"y":16,"w":6,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"max(workers_healthy)","refId":"A"}]},
+    {"id":7,"title":"Retries and expired leases / second","type":"timeseries","gridPos":{"x":18,"y":16,"w":6,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"sum by(event)(rate(job_events_total{event=~\"retried|lease_expired|dead_lettered\"}[2m]))","legendFormat":"{{event}}","refId":"A"}]},
+    {"id":8,"title":"HTTP p95 (seconds)","type":"timeseries","gridPos":{"x":0,"y":24,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"histogram_quantile(0.95,sum by(le)(rate(http_request_duration_seconds_bucket[2m])))","refId":"A"}]},
+    {"id":9,"title":"RPC errors / second","type":"timeseries","gridPos":{"x":12,"y":24,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"expr":"sum by(code)(rate(grpc_requests_total{code!=\"OK\"}[1m]))","legendFormat":"{{code}}","refId":"A"}]}
+  ]
+}
