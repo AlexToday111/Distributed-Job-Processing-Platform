@@ -1,0 +1,16 @@
+﻿                                                          QUERY PLAN                                                          
+------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.14..8.17 rows=1 width=34) (actual time=0.027..0.028 rows=0 loops=1)
+   Buffers: shared hit=1
+   ->  LockRows  (cost=0.14..8.17 rows=1 width=34) (actual time=0.027..0.027 rows=0 loops=1)
+         Buffers: shared hit=1
+         ->  Index Scan using jobs_claim on jobs  (cost=0.14..8.16 rows=1 width=34) (actual time=0.027..0.027 rows=0 loops=1)
+               Index Cond: (queue = 'default'::text)
+               Filter: (status = 'READY'::text)
+               Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=254
+ Planning Time: 2.678 ms
+ Execution Time: 0.094 ms
+(12 rows)
+

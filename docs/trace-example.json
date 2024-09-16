@@ -1,0 +1,226 @@
+﻿{
+    "data":  [
+                 {
+                     "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                     "spans":  [
+                                   {
+                                       "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                       "spanID":  "1c395fa31329c6ff",
+                                       "operationName":  "job.persist",
+                                       "references":  [
+                                                          {
+                                                              "refType":  "CHILD_OF",
+                                                              "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                                              "spanID":  "6889ff73b57a7a36"
+                                                          }
+                                                      ],
+                                       "startTime":  1790946814226710,
+                                       "duration":  4115,
+                                       "tags":  [
+                                                    {
+                                                        "key":  "otel.scope.name",
+                                                        "type":  "string",
+                                                        "value":  "api"
+                                                    },
+                                                    {
+                                                        "key":  "span.kind",
+                                                        "type":  "string",
+                                                        "value":  "internal"
+                                                    }
+                                                ],
+                                       "logs":  [
+
+                                                ],
+                                       "processID":  "p1",
+                                       "warnings":  null
+                                   },
+                                   {
+                                       "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                       "spanID":  "6889ff73b57a7a36",
+                                       "operationName":  "POST",
+                                       "references":  [
+
+                                                      ],
+                                       "startTime":  1790946814225160,
+                                       "duration":  5808,
+                                       "tags":  [
+                                                    {
+                                                        "key":  "client.address",
+                                                        "type":  "string",
+                                                        "value":  "172.18.0.1"
+                                                    },
+                                                    {
+                                                        "key":  "http.request.body.size",
+                                                        "type":  "int64",
+                                                        "value":  45
+                                                    },
+                                                    {
+                                                        "key":  "http.request.method",
+                                                        "type":  "string",
+                                                        "value":  "POST"
+                                                    },
+                                                    {
+                                                        "key":  "http.response.body.size",
+                                                        "type":  "int64",
+                                                        "value":  366
+                                                    },
+                                                    {
+                                                        "key":  "http.response.status_code",
+                                                        "type":  "int64",
+                                                        "value":  201
+                                                    },
+                                                    {
+                                                        "key":  "network.peer.address",
+                                                        "type":  "string",
+                                                        "value":  "172.18.0.1"
+                                                    },
+                                                    {
+                                                        "key":  "network.peer.port",
+                                                        "type":  "int64",
+                                                        "value":  59666
+                                                    },
+                                                    {
+                                                        "key":  "network.protocol.version",
+                                                        "type":  "string",
+                                                        "value":  "1.1"
+                                                    },
+                                                    {
+                                                        "key":  "otel.scope.name",
+                                                        "type":  "string",
+                                                        "value":  "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+                                                    },
+                                                    {
+                                                        "key":  "otel.scope.version",
+                                                        "type":  "string",
+                                                        "value":  "0.71.0"
+                                                    },
+                                                    {
+                                                        "key":  "server.address",
+                                                        "type":  "string",
+                                                        "value":  "localhost"
+                                                    },
+                                                    {
+                                                        "key":  "server.port",
+                                                        "type":  "int64",
+                                                        "value":  8080
+                                                    },
+                                                    {
+                                                        "key":  "span.kind",
+                                                        "type":  "string",
+                                                        "value":  "server"
+                                                    },
+                                                    {
+                                                        "key":  "url.path",
+                                                        "type":  "string",
+                                                        "value":  "/api/v1/jobs"
+                                                    },
+                                                    {
+                                                        "key":  "url.scheme",
+                                                        "type":  "string",
+                                                        "value":  "http"
+                                                    },
+                                                    {
+                                                        "key":  "user_agent.original",
+                                                        "type":  "string",
+                                                        "value":  "Mozilla/5.0 (Windows NT; Windows NT 10.0; ru-RU) WindowsPowerShell/5.1.26100.2161"
+                                                    }
+                                                ],
+                                       "logs":  [
+
+                                                ],
+                                       "processID":  "p1",
+                                       "warnings":  null
+                                   },
+                                   {
+                                       "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                       "spanID":  "8c0b7e7b196dd6e3",
+                                       "operationName":  "job.execute",
+                                       "references":  [
+                                                          {
+                                                              "refType":  "CHILD_OF",
+                                                              "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                                              "spanID":  "c7f17fe62e7b727e"
+                                                          }
+                                                      ],
+                                       "startTime":  1790946844109441,
+                                       "duration":  112233,
+                                       "tags":  [
+                                                    {
+                                                        "key":  "otel.scope.name",
+                                                        "type":  "string",
+                                                        "value":  "worker"
+                                                    },
+                                                    {
+                                                        "key":  "span.kind",
+                                                        "type":  "string",
+                                                        "value":  "internal"
+                                                    }
+                                                ],
+                                       "logs":  [
+
+                                                ],
+                                       "processID":  "p2",
+                                       "warnings":  null
+                                   },
+                                   {
+                                       "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                       "spanID":  "c7f17fe62e7b727e",
+                                       "operationName":  "job.dispatch",
+                                       "references":  [
+                                                          {
+                                                              "refType":  "CHILD_OF",
+                                                              "traceID":  "94d41f0899b3919009b94a12c9fc3c2d",
+                                                              "spanID":  "1c395fa31329c6ff"
+                                                          }
+                                                      ],
+                                       "startTime":  1790946844108407,
+                                       "duration":  9,
+                                       "tags":  [
+                                                    {
+                                                        "key":  "otel.scope.name",
+                                                        "type":  "string",
+                                                        "value":  "scheduler"
+                                                    },
+                                                    {
+                                                        "key":  "span.kind",
+                                                        "type":  "string",
+                                                        "value":  "internal"
+                                                    }
+                                                ],
+                                       "logs":  [
+
+                                                ],
+                                       "processID":  "p3",
+                                       "warnings":  [
+                                                        "clock skew adjustment disabled; not applying calculated delta of -29.879643765s"
+                                                    ]
+                                   }
+                               ],
+                     "processes":  {
+                                       "p1":  {
+                                                  "serviceName":  "api",
+                                                  "tags":  [
+
+                                                           ]
+                                              },
+                                       "p2":  {
+                                                  "serviceName":  "worker",
+                                                  "tags":  [
+
+                                                           ]
+                                              },
+                                       "p3":  {
+                                                  "serviceName":  "scheduler",
+                                                  "tags":  [
+
+                                                           ]
+                                              }
+                                   },
+                     "warnings":  null
+                 }
+             ],
+    "total":  0,
+    "limit":  0,
+    "offset":  0,
+    "errors":  null
+}

@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-10-02T13:17:01.522337+00:00",
+  "results": [
+    {
+      "workers": 1,
+      "concurrency": 4,
+      "queue_size": 4,
+      "jobs": 400,
+      "duration_ms": 100,
+      "elapsed_seconds": 31.844486168000003,
+      "jobs_per_second": 12.561044253932833,
+      "p95_queue_wait_seconds": 29.721285950000002,
+      "database_completion_span_seconds": 31.351686
+    },
+    {
+      "workers": 2,
+      "concurrency": 4,
+      "queue_size": 4,
+      "jobs": 400,
+      "duration_ms": 100,
+      "elapsed_seconds": 16.238993439000296,
+      "jobs_per_second": 24.632068576328262,
+      "p95_queue_wait_seconds": 14.9827897,
+      "database_completion_span_seconds": 16.119192
+    },
+    {
+      "workers": 4,
+      "concurrency": 4,
+      "queue_size": 4,
+      "jobs": 400,
+      "duration_ms": 100,
+      "elapsed_seconds": 10.034240113999658,
+      "jobs_per_second": 39.86350689793884,
+      "p95_queue_wait_seconds": 8.92282485,
+      "database_completion_span_seconds": 9.640909
+    },
+    {
+      "workers": 8,
+      "concurrency": 4,
+      "queue_size": 4,
+      "jobs": 400,
+      "duration_ms": 100,
+      "elapsed_seconds": 6.51396497199994,
+      "jobs_per_second": 61.40653223027551,
+      "p95_queue_wait_seconds": 5.1904931,
+      "database_completion_span_seconds": 6.103353
+    }
+  ]
+}

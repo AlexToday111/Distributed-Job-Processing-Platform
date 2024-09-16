@@ -1,0 +1,105 @@
+﻿{
+    "status":  "success",
+    "data":  {
+                 "activeTargets":  [
+                                       {
+                                           "discoveredLabels":  {
+                                                                    "__address__":  "api:8080",
+                                                                    "__metrics_path__":  "/metrics",
+                                                                    "__scheme__":  "http",
+                                                                    "__scrape_interval__":  "5s",
+                                                                    "__scrape_timeout__":  "5s",
+                                                                    "job":  "job-platform"
+                                                                },
+                                           "labels":  {
+                                                          "instance":  "api:8080",
+                                                          "job":  "job-platform"
+                                                      },
+                                           "scrapePool":  "job-platform",
+                                           "scrapeUrl":  "http://api:8080/metrics",
+                                           "globalUrl":  "http://api:8080/metrics",
+                                           "lastError":  "",
+                                           "lastScrape":  "2026-10-02T13:08:34.670441694Z",
+                                           "lastScrapeDuration":  0.005962995,
+                                           "health":  "up",
+                                           "scrapeInterval":  "5s",
+                                           "scrapeTimeout":  "5s"
+                                       },
+                                       {
+                                           "discoveredLabels":  {
+                                                                    "__address__":  "scheduler:8080",
+                                                                    "__metrics_path__":  "/metrics",
+                                                                    "__scheme__":  "http",
+                                                                    "__scrape_interval__":  "5s",
+                                                                    "__scrape_timeout__":  "5s",
+                                                                    "job":  "job-platform"
+                                                                },
+                                           "labels":  {
+                                                          "instance":  "scheduler:8080",
+                                                          "job":  "job-platform"
+                                                      },
+                                           "scrapePool":  "job-platform",
+                                           "scrapeUrl":  "http://scheduler:8080/metrics",
+                                           "globalUrl":  "http://scheduler:8080/metrics",
+                                           "lastError":  "",
+                                           "lastScrape":  "2026-10-02T13:08:34.266926051Z",
+                                           "lastScrapeDuration":  0.003833529,
+                                           "health":  "up",
+                                           "scrapeInterval":  "5s",
+                                           "scrapeTimeout":  "5s"
+                                       },
+                                       {
+                                           "discoveredLabels":  {
+                                                                    "__address__":  "worker-1:8080",
+                                                                    "__metrics_path__":  "/metrics",
+                                                                    "__scheme__":  "http",
+                                                                    "__scrape_interval__":  "5s",
+                                                                    "__scrape_timeout__":  "5s",
+                                                                    "job":  "job-platform"
+                                                                },
+                                           "labels":  {
+                                                          "instance":  "worker-1:8080",
+                                                          "job":  "job-platform"
+                                                      },
+                                           "scrapePool":  "job-platform",
+                                           "scrapeUrl":  "http://worker-1:8080/metrics",
+                                           "globalUrl":  "http://worker-1:8080/metrics",
+                                           "lastError":  "",
+                                           "lastScrape":  "2026-10-02T13:08:37.806585794Z",
+                                           "lastScrapeDuration":  0.023964666,
+                                           "health":  "up",
+                                           "scrapeInterval":  "5s",
+                                           "scrapeTimeout":  "5s"
+                                       },
+                                       {
+                                           "discoveredLabels":  {
+                                                                    "__address__":  "worker-2:8080",
+                                                                    "__metrics_path__":  "/metrics",
+                                                                    "__scheme__":  "http",
+                                                                    "__scrape_interval__":  "5s",
+                                                                    "__scrape_timeout__":  "5s",
+                                                                    "job":  "job-platform"
+                                                                },
+                                           "labels":  {
+                                                          "instance":  "worker-2:8080",
+                                                          "job":  "job-platform"
+                                                      },
+                                           "scrapePool":  "job-platform",
+                                           "scrapeUrl":  "http://worker-2:8080/metrics",
+                                           "globalUrl":  "http://worker-2:8080/metrics",
+                                           "lastError":  "",
+                                           "lastScrape":  "2026-10-02T13:08:37.893808479Z",
+                                           "lastScrapeDuration":  0.011715057,
+                                           "health":  "up",
+                                           "scrapeInterval":  "5s",
+                                           "scrapeTimeout":  "5s"
+                                       }
+                                   ],
+                 "droppedTargets":  [
+
+                                    ],
+                 "droppedTargetCounts":  {
+                                             "job-platform":  0
+                                         }
+             }
+}

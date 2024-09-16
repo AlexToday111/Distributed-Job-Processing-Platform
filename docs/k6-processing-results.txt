@@ -1,0 +1,39 @@
+  █ THRESHOLDS 
+
+    job_completed
+    ✓ 'rate>0.99' rate=100.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 400     31.712563/s
+    checks_succeeded...: 100.00% 400 out of 400
+    checks_failed......: 0.00%   0 out of 400
+
+    ✓ created
+
+    CUSTOM
+    job_completed..................: 100.00% 400 out of 400
+    job_end_to_end_seconds.........: avg=0.500805 min=0.372    med=0.515    max=0.664    p(90)=0.5737   p(95)=0.618  
+
+    HTTP
+    http_req_duration..............: avg=4.49ms   min=497.72µs med=1.32ms   max=65.04ms  p(90)=14.29ms  p(95)=19.59ms
+      { expected_response:true }...: avg=4.49ms   min=497.72µs med=1.32ms   max=65.04ms  p(90)=14.29ms  p(95)=19.59ms
+    http_req_failed................: 0.00%   0 out of 2665
+    http_reqs......................: 2665    211.284952/s
+
+    EXECUTION
+    iteration_duration.............: avg=501.18ms min=371.18ms med=515.74ms max=664.52ms p(90)=573.23ms p(95)=617.9ms
+    iterations.....................: 400     31.712563/s
+    vus............................: 16      min=16         max=16
+    vus_max........................: 16      min=16         max=16
+
+    NETWORK
+    data_received..................: 1.6 MB  123 kB/s
+    data_sent......................: 507 kB  40 kB/s
+
+
+
+
+running (00m12.6s), 00/16 VUs, 400 complete and 0 interrupted iterations
+default ✓ [ 100% ] 16 VUs  00m12.6s/10m0s  400/400 shared iters

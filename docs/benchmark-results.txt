@@ -1,0 +1,25 @@
+﻿PASS
+ok  	jobplatform/internal/api	0.238s
+PASS
+ok  	jobplatform/internal/config	0.621s
+goos: windows
+goarch: amd64
+pkg: jobplatform/internal/domain
+cpu: AMD Ryzen 7 8745HS w/ Radeon 780M Graphics     
+BenchmarkRetryCalculation-16    	34220792	        32.96 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	jobplatform/internal/domain	1.790s
+?   	jobplatform/internal/observability	[no test files]
+?   	jobplatform/internal/repository/postgres	[no test files]
+?   	jobplatform/internal/runtime	[no test files]
+?   	jobplatform/internal/scheduler	[no test files]
+?   	jobplatform/internal/transport/pb	[no test files]
+goos: windows
+goarch: amd64
+pkg: jobplatform/internal/worker
+cpu: AMD Ryzen 7 8745HS w/ Radeon 780M Graphics     
+BenchmarkHandlerRegistry-16    	 1526872	       900.4 ns/op	     240 B/op	       6 allocs/op
+BenchmarkWorkerPool-16         	15521743	        79.58 ns/op	       0 B/op	       0 allocs/op
+BenchmarkJobDispatch-16        	 3716671	       464.5 ns/op	      96 B/op	       1 allocs/op
+PASS
+ok  	jobplatform/internal/worker	4.568s
